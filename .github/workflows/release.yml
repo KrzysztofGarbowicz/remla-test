@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Registry Login (ghcr.io)
-        run: echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u krzysztofgarbowicz/remla-test --password-stdin
+        run: echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u $.lowercase --password-stdin
       - name: Parse version info from tag
         run: |
           # GITHUB_REF is like refs/tags/v2.3.5, so strip the first 11 chars
@@ -22,7 +22,7 @@ jobs:
           echo "version_patch=$PATCH" >> $GITHUB_ENV
       - name: Build and Push Docker Image
         run: |
-          IMG=ghcr.io/${{ ${github.repository,,} }}
+          IMG=ghcr.io/${{ github.repository.lowercase }}
           docker build \
             --tag $IMG:${{ env.version }} \
             --tag $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest \
